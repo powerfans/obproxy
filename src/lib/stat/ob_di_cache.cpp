@@ -60,8 +60,12 @@ void DIRWLock::rdlock()
     }
 #if defined(__aarch64__)
     asm("yield");
-#else
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
     asm("pause");
+#else
+#error arch unsupported
 #endif
   }
 }
@@ -71,8 +75,12 @@ void DIRWLock::wrlock()
   while (!ATOMIC_BCAS(&lock_, 0, WRITE_MASK)) {
 #if defined(__aarch64__)
     asm("yield");
-#else
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
     asm("pause");
+#else
+#error arch unsupported
 #endif
   }
 }
@@ -82,8 +90,12 @@ void DIRWLock::wr2rdlock()
   while (!ATOMIC_BCAS(&lock_, WRITE_MASK, 1)) {
 #if defined(__aarch64__)
     asm("yield");
-#else
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
     asm("pause");
+#else
+#error arch unsupported
 #endif
   }
 }

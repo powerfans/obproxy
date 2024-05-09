@@ -23,6 +23,10 @@
 #include <stdlib.h>
 #include "lib/checksum/ob_crc64.h"
 #include "lib/ob_define.h"
+#if defined(__powerpc64__)  /* add crc32c_ppc.h only used by powerpc, needn't add #else branch for other platform here*/
+#include <crc32c_ppc.h>
+#endif
+
 
 namespace oceanbase
 {
@@ -428,8 +432,17 @@ for RHEL4 support (GCC 3 doesn't support this instruction) */
 #include "arm_acle.h"
 #define crc32_sse42_quadword crc = __crc32cd((uint32_t)(crc), *(int64_t*)buf); len -= 8, buf += 8
 #define crc32_sse42_byte crc = __crc32cb((uint32_t)(crc), (uint8_t)*buf); len--, buf++
+#elif defined(__powerpc64__)
+uint64_t ob_crc64_ppc64(uint64_t uCRC64, const char* buf, int64_t cb)
+{
+  if (buf == NULL || cb <= 0){
+    return uCRC64;
+  }
+  return crc32c_ppc64_vpmsum(uCRC64,(const unsigned char*)(buf), cb);
+}
 #endif /* defined(__GNUC__) && defined(__x86_64__) */
 
+#if defined(__x86_64__) || defined(__aarch64__)
 inline static uint64_t crc64_sse42(uint64_t uCRC64,
                                    const char *buf, int64_t len)
 {
@@ -458,6 +471,7 @@ inline static uint64_t crc64_sse42(uint64_t uCRC64,
 
   return crc;
 }
+#endif
 
 /*
 static uint64_t crc64_sse42_manually(uint64_t crc, const char *buf, int64_t len)
@@ -1127,6 +1141,9 @@ uint64_t crc64_sse42_dispatch(uint64_t crc, const char *buf, int64_t len)
     ob_crc64_sse42_func = &fast_crc64_sse42_manually;
     _OB_LOG(INFO, "Use manual crc32 table lookup for crc64 calculate");
     #endif
+  #elif defined(__powerpc64__)
+    ob_crc64_sse42_func = &ob_crc64_ppc64;
+    _OB_LOG(INFO, "Use crc64_ppc64 for powerpc64 ppc64le");
   #else
     #error arch unsupported
   #endif

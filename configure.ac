@@ -29,6 +29,10 @@
           AM_CXXFLAGS="-g -O2 -D_OB_VERSION=1000 -D_NO_EXCEPTION -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -D__USE_LARGEFILE64 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -Wall -Wextra -Wno-unused-parameter -Wformat -Wno-conversion -Wno-deprecated -Wno-invalid-offsetof -Wno-unused-result -Wno-format-security -finline-functions -fno-strict-aliasing -mtune=generic -march=armv8-a+crc -Wno-psabi -Wno-sign-compare -Wno-class-memaccess -Wno-deprecated-copy -Wno-ignored-qualifiers -Wno-aligned-new -Wno-format-truncation -Wno-literal-suffix -Wno-format-overflow -Wno-stringop-truncation -Wno-memset-elt-size -Wno-cast-function-type -Wno-address-of-packed-member -fno-omit-frame-pointer -Wl,-z,noexecstack,-z,relro,-z,now,-z,notext -fPIC"
           AM_CFLAGS="-g -O2 -D_OB_VERSION=1000 -DCOMPATIBLE -D__USE_LARGEFILE64 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DNDEBUG -finline-functions -fno-strict-aliasing -Wall -mtune=generic -Wno-psabi -Wno-sign-compare -Wl,-z,noexecstack,-z,relro,-z,now,-z,notext -fPIC"
         ;;
+        *powerpc64le* )
+          AM_CXXFLAGS="-g -O2 -D_OB_VERSION=1000 -D_NO_EXCEPTION -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -D__USE_LARGEFILE64 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -Wall -Wextra -Wno-attributes -Wno-unused-parameter -Wformat -Wno-conversion -Wno-deprecated -Wno-invalid-offsetof -Wno-unused-result -Wno-format-security -finline-functions -fno-strict-aliasing -mcpu=power8 -mtune=power8 -Wno-error=address -Wno-psabi -Wno-sign-compare -Wno-class-memaccess -Wno-deprecated-copy -Wno-ignored-qualifiers -Wno-aligned-new -Wno-format-truncation -Wno-literal-suffix -Wno-format-overflow -Wno-stringop-truncation -Wno-memset-elt-size -Wno-cast-function-type -Wno-address-of-packed-member -fno-omit-frame-pointer -Wl,-z,noexecstack,-z,relro,-z,now,-z,notext -fPIC"
+          AM_CFLAGS="-g -O2 -D_OB_VERSION=1000 -DCOMPATIBLE -D__USE_LARGEFILE64 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DNDEBUG -finline-functions -fno-strict-aliasing -Wall -mcpu=power8 -mtune=power8 -Wno-attributes -Wno-error=address -Wno-psabi -Wno-sign-compare -Wl,-z,noexecstack,-z,relro,-z,now,-z,notext -fPIC"
+        ;;
         * )
           AM_CXXFLAGS="-g -O2 -D_OB_VERSION=1000 -D_NO_EXCEPTION -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -D__USE_LARGEFILE64 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -Wall -Wextra -Wno-unused-parameter -Wformat -Wno-conversion -Wno-deprecated -Wno-invalid-offsetof -Wno-unused-result -Wno-format-security -finline-functions -fno-strict-aliasing -mtune=core2 -Wno-psabi -Wno-sign-compare -Wno-class-memaccess -Wno-deprecated-copy -Wno-ignored-qualifiers -Wno-aligned-new -Wno-format-truncation -Wno-literal-suffix -Wno-format-overflow -Wno-stringop-truncation -Wno-memset-elt-size -Wno-cast-function-type -Wno-address-of-packed-member -fno-omit-frame-pointer -Wl,-z,noexecstack,-z,relro,-z,now,-z,notext -fPIC"
           AM_CFLAGS="-g -O2 -D_OB_VERSION=1000 -DCOMPATIBLE -D__USE_LARGEFILE64 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -DNDEBUG -finline-functions -fno-strict-aliasing -Wall -mtune=core2 -Wno-psabi -Wno-sign-compare -Wl,-z,noexecstack,-z,relro,-z,now,-z,notext -fPIC"
@@ -346,6 +350,10 @@
     dnl LDADD
     AM_LDFLAGS="${AM_LDFLAGS} -Wl,--no-as-needed -Wl,--allow-multiple-definition"
     BIN_LDFLAGS="-lc -lrt -pie"
+ 
+    if test "X$host_cpu" = "Xpowerpc64le"; then
+        BIN_LDFLAGS+=" -lcrc32c_ppc"
+    fi
 
     if test "X9.3.0" = "X$GCC_VERSION"; then
         AM_LDFLAGS="${AM_LDFLAGS} -static-libstdc++ -static-libgcc"

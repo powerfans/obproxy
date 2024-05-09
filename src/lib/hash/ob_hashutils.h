@@ -46,8 +46,8 @@
 
 extern "C" {
 struct _ParseNode;
-extern uint64_t parsenode_hash(const _ParseNode *node);
-extern bool parsenode_equal(const _ParseNode *node1, const _ParseNode *node2);
+extern uint64_t parsenode_hash(const _ParseNode *node, int *ret);
+extern bool parsenode_equal(const _ParseNode *node1, const _ParseNode *node2, int *ret);
 }
 
 namespace oceanbase
@@ -570,7 +570,7 @@ struct equal_to <_ParseNode *>
 {
   bool operator()(_ParseNode *a, _ParseNode *b) const
   {
-    return parsenode_equal(a, b);
+    return parsenode_equal(a, b, NULL);
   }
 };
 
@@ -579,7 +579,7 @@ struct equal_to <const _ParseNode *>
 {
   bool operator()(const _ParseNode *a, const _ParseNode *b) const
   {
-    return parsenode_equal(a, b);
+    return parsenode_equal(a, b, NULL);
   }
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -645,7 +645,7 @@ struct hash_func <_ParseNode *>
 {
   uint64_t operator() (const _ParseNode *key) const
   {
-    return parsenode_hash(key);
+    return parsenode_hash(key, NULL);
   }
 };
 template <>
@@ -653,7 +653,7 @@ struct hash_func <const _ParseNode *>
 {
   uint64_t operator() (const _ParseNode *key) const
   {
-    return parsenode_hash(key);
+    return parsenode_hash(key, NULL);
   }
 };
 

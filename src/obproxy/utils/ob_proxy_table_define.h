@@ -25,6 +25,8 @@ enum ObProxyKernelRelease
   RELEASE_5U = 0,
   RELEASE_6U,
   RELEASE_7U,
+  RELEASE_8U,
+  RELEASE_9U,
   RELEASE_UNKNOWN,
   RELEASE_MAX,
 };

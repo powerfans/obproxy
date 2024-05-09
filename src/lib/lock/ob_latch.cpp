@@ -93,9 +93,13 @@ int ObLatchWaitQueue::wait(
             }
 
 #if defined(__aarch64__)
-            asm("yield");
+    asm("yield");
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
+    asm("pause");
 #else
-            asm("pause");
+#error arch unsupported
 #endif
           }
 
@@ -214,8 +218,12 @@ void ObLatchWaitQueue::lock_bucket(ObLatchBucket &bucket)
     ++i;
 #if defined(__aarch64__)
     asm("yield");
-#else
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
     asm("pause");
+#else
+#error arch unsupported
 #endif
   }
   if (OB_UNLIKELY(NULL != di)) {
@@ -259,9 +267,13 @@ int ObLatchWaitQueue::try_lock(
         }
       }
 #if defined(__aarch64__)
-      asm("yield");
+    asm("yield");
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
+    asm("pause");
 #else
-      asm("pause");
+#error arch unsupported
 #endif
     }
 
@@ -330,9 +342,13 @@ int ObLatch::try_rdlock(const uint32_t latch_id)
       }
 
 #if defined(__aarch64__)
-      asm("yield");
+    asm("yield");
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
+    asm("pause");
 #else
-      asm("pause");
+#error arch unsupported
 #endif
     } while (true);
 
@@ -442,9 +458,13 @@ int ObLatch::wr2rdlock(const uint32_t *puid)
     while (!ATOMIC_BCAS(&lock_, lock, (lock & WAIT_MASK) + 1)) {
       lock = lock_;
 #if defined(__aarch64__)
-      asm("yield");
+    asm("yield");
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
+    asm("pause");
 #else
-      asm("pause");
+#error arch unsupported
 #endif
     }
     bool only_rd_wait = true;
@@ -518,9 +538,13 @@ int ObLatch::low_lock(
           break;
         }
 #if defined(__aarch64__)
-        asm("yield");
+    asm("yield");
+#elif defined(__powerpc64__)
+    asm("or 27,27,27\n":::"memory");
+#elif defined(__x86_64__)
+    asm("pause");
 #else
-        asm("pause");
+#error arch unsupported
 #endif
       }
       spin_cnt += i;

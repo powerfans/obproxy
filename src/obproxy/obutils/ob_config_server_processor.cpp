@@ -1141,7 +1141,7 @@ int ObConfigServerProcessor::get_kernel_release_by_glibc(ObProxyKernelRelease &r
   char result[OB_MAX_UNAME_INFO_LEN];
   result[0] = '\0';
 
-  if (OB_ISNULL(fp = popen("rpm -q glibc | grep x86_64", "r"))) {
+  if (OB_ISNULL(fp = popen("rpm -q glibc | egrep 'x86_64|ppc64le'", "r"))) {
     ret = OB_ERR_UNEXPECTED;
     LOG_WDIAG("fail to get glibc info", K(ret));
   } else {
@@ -1160,6 +1160,10 @@ int ObConfigServerProcessor::get_kernel_release_by_glibc(ObProxyKernelRelease &r
       release = RELEASE_7U;
     } else if (NULL != strstr(result, ".alios7")) {
       release = RELEASE_7U;
+    } else if (NULL != strstr(result, ".el8")) {
+      release = RELEASE_8U;
+    } else if (NULL != strstr(result, ".el9")) {
+      release = RELEASE_9U;
     } else {
       ret = OB_ERR_UNEXPECTED;
       LOG_WDIAG("unknown release from glibc", K(result), K(ret));

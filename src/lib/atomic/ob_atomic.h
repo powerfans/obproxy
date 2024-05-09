@@ -30,6 +30,9 @@ namespace common
 #elif defined(__aarch64__)
 #define WEAK_BARRIER() __sync_synchronize()
 #define PAUSE() ({asm("yield\n");})  // for ARM
+#elif defined(__powerpc64__)
+#define WEAK_BARRIER() __COMPILER_BARRIER()
+#define PAUSE() ({asm volatile("or 27,27,27\n":::"memory");})
 #else
 #error arch unsupported
 #endif

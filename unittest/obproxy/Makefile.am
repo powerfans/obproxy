@@ -39,8 +39,10 @@ LDADD = $(top_builddir)/src/obproxy/libobproxy.la           \
 				${DEP_DIR}/lib/libssl.a \
 				${DEP_DIR}/lib/libcurl.a \
 				${DEP_DIR}/lib/libcrypto.a \
-				${DEP_DIR}/lib/sqlite/libsqlite3.a \
-        -lc -lm -lrt -ldl -lpthread
+				${DEP_DIR}/lib/sqlite/libsqlite3.a
+
+## need BIN_LDFLAGS defined in configure.ac, add -lcrc32c_ppc for power ppc64le
+LDADD += ${BIN_LDFLAGS} -lc -lm -lrt -ldl -lpthread
 
 pub_sources=                                           \
                  test_eventsystem_api.h                \

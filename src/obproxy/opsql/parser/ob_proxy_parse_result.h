@@ -28,6 +28,11 @@
 
 #define OBPROXY_MAX_DBP_SHARD_KEY_NUM 64
 
+#define PARSE_SELECT_HAVING     5  /* having */
+
+#define T_LIMIT_INT 2
+
+
 typedef enum ObProxyBasicStmtType
 {
   OBPROXY_T_INVALID = 0,

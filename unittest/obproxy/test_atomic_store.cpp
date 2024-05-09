@@ -38,10 +38,14 @@ static volatile int g_reorder_count CACHE_ALIGNED = 0;
 void inline lock_old()
 {
   while (!ATOMIC_BCAS(&g_lock_v, 0, 1)) {
-  #if defined(__aarch64__)
-      asm("yield");
+  #if defined(__x86_64__)
+                asm("pause");
+  #elif defined(__aarch64__)
+                asm("yield");  // for ARM
+  #elif defined(__powerpc64__)
+               __asm__ __volatile__("or 27,27,27\n":::"memory");
   #else
-      asm("pause");
+    #error arch unsupported
   #endif
   }
 }
@@ -55,10 +59,14 @@ void inline unlock_old()
 void inline lock()
 {
   while (!ATOMIC_BCAS(&g_lock_v, 0, 1)) {
-  #if defined(__aarch64__)
-      asm("yield");
+  #if defined(__x86_64__)
+                asm("pause");
+  #elif defined(__aarch64__)
+                asm("yield");  // for ARM
+  #elif defined(__powerpc64__)
+               __asm__ __volatile__("or 27,27,27\n":::"memory");
   #else
-      asm("pause");
+    #error arch unsupported
   #endif
   }
 }

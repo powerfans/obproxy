@@ -59,7 +59,15 @@
 #define CBT_CAS(x, ov, nv) __sync_bool_compare_and_swap((x), (ov), (nv))
 #define CBT_FAA(x, i) __sync_fetch_and_add((x), (i))
 #define CBT_AAF(x, i) __sync_add_and_fetch((x), (i))
+#if defined(__x86_64__)
 #define CBT_RELAX() asm volatile ("pause;\n")
+#elif defined(__aarch64__)
+#define CBT_RELAX() asm volatile("yield\n");
+#elif defined(__powerpc64__)
+#define CBT_RELAX() asm volatile("or 27,27,27\n":::"memory");
+#else
+#error arch unsupported
+#endif
 #define CHECK_POSITIVE(i) char __check_positive_array[i];
 #define CBT_UNUSED(x) (void)(x)
 namespace cbtree
