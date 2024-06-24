@@ -7,8 +7,8 @@ devdeps-openssl-static-1.0.1e-1.el8.ppc64le.rpm
 devdeps-libcurl-static-7.29.0-1.el8.ppc64le.rpm
 devdeps-mariadb-connector-c-3.1.12-1.el8.ppc64le.rpm
 devdeps-prometheus-cpp-0.8.0-1.el8.ppc64le.rpm
-devdeps-gtest-1.8.0-1.el8.ppc64le.rpm
-devdeps-grpc-1.20.1-1.el8.ppc64le.rpm 
+devdeps-gtest-1.8.0-1.el8-O2fPIC-byGCC9.ppc64le.rpm
+devdeps-grpc-1.20.1-1.el8.ppc64le.rpm
 devdeps-sqlite-3.38.1-1.el8.ppc64le.rpm
 
 [tools]
