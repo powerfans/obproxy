@@ -1998,10 +1998,15 @@ int ObLogger::push_to_async_queue(ObLogItem &log_item)
 #define ASYNC_LOG_DATA_BODY(log_item) \
   int64_t pos = log_item.get_data_len(); \
   char *data = log_item.get_buf(); \
-  va_list args_tmp;                \
-  va_copy(args_tmp, args);         \
-  ret = logdata_vprintf(data, log_item.get_buf_size(), pos, fmt, args_tmp); \
-  va_end(args_tmp);                \
+  if ((data != nullptr) && (strlen(data) == 0)) { \
+     pos = log_item.get_buf_size() - 1;         \
+     ret = OB_SIZE_OVERFLOW;                    \
+  } else {                           \
+    va_list args_tmp;                \
+    va_copy(args_tmp, args);         \
+    ret = logdata_vprintf(data, log_item.get_buf_size(), pos, fmt, args_tmp); \
+    va_end(args_tmp);                \
+  }                                  \
   if (OB_SUCC(ret) || OB_UNLIKELY(OB_SIZE_OVERFLOW == ret)) { \
     ret = OB_SUCCESS; \
     check_log_end(log_item, pos); \
