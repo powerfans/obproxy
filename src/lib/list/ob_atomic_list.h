@@ -20,10 +20,8 @@ namespace oceanbase
 namespace common
 {
 
-#if defined(__powerpc64__) /*define it for powerpc64 */
-#define OB_HAS_128BIT_CAS 1
-#endif
-#define DOUBLE_FREE_CHECK 1
+
+//#define OB_HAS_128BIT_CAS 1
 //#define DOUBLE_FREE_CHECK 1
 
 // Generic atomic list Implementation (for pointer data types only). Uses
@@ -94,6 +92,12 @@ union ObHeadNode
 #define SET_FREELIST_POINTER_VERSION(x,p,v) \
   (x).s_.pointer_ = p; (x).s_.version_ = v
 #elif defined(__x86_64__) || defined(__ia64__)
+#define FREELIST_POINTER(x) (reinterpret_cast<void *>((((static_cast<intptr_t>((x).data_)) <<16) >> 16) | \
+ (((~(((static_cast<intptr_t>((x).data_)) << 16 >> 63) - 1)) >> 48) << 48)))  // sign extend
+#define FREELIST_VERSION(x) ((static_cast<intptr_t>((x).data_)) >> 48)
+#define SET_FREELIST_POINTER_VERSION(x,p,v) \
+  (x).data_ = (((reinterpret_cast<intptr_t>(p))&0x0000FFFFFFFFFFFFULL) | (((v)&0xFFFFULL) << 48))
+#if defined(__powerpc64__)
 #define FREELIST_POINTER(x) (reinterpret_cast<void *>((((static_cast<intptr_t>((x).data_)) <<16) >> 16) | \
  (((~(((static_cast<intptr_t>((x).data_)) << 16 >> 63) - 1)) >> 48) << 48)))  // sign extend
 #define FREELIST_VERSION(x) ((static_cast<intptr_t>((x).data_)) >> 48)
