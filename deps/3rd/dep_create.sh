@@ -87,6 +87,13 @@ function get_os_release() {
         version_ge "7.0" && OS_RELEASE=7 && return
         ;;
     esac
+  elif [[ "${OS_ARCH}x" == "ppc64lex" ]]; then
+    case "$ID" in
+      centos)
+        version_ge "8.0" && compat_centos8 && return
+        version_ge "7.0" && compat_centos7 && return
+        ;;
+    esac
   fi
   not_supported && return 1
 }
