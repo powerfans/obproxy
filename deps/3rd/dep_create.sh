@@ -91,7 +91,6 @@ function get_os_release() {
     case "$ID" in
       centos)
         version_ge "8.0" && compat_centos8 && return
-        version_ge "7.0" && compat_centos7 && return
         ;;
     esac
   fi
