@@ -20,7 +20,6 @@ namespace oceanbase
 namespace common
 {
 
-
 //#define OB_HAS_128BIT_CAS 1
 //#define DOUBLE_FREE_CHECK 1
 
